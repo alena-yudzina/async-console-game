@@ -3,7 +3,27 @@ import curses
 import random
 import time
 
-from curses_tools import draw_frame
+import curses_tools
+
+
+def move_rocket(row, column, canvas, rows_direction, columns_direction, rocket_1):
+    row_size, column_size = curses_tools.get_frame_size(rocket_1)
+    hight, width = canvas.getmaxyx()
+
+    if row >= 0 and row + row_size <= hight:
+        row += rows_direction
+    if row == -1:
+        row = 1
+    if row == hight - row_size + 1:
+        row = hight - row_size - 1
+    if column >= 0 and column + column_size <= width:
+        column += columns_direction
+    if column == -1:
+        column = 1
+    if column == width - column_size + 1:
+        column = width - column_size - 1
+
+    return(row, column)
 
 
 async def blink(canvas, row, column, symbol='*'):
@@ -58,35 +78,40 @@ async def fire(canvas, start_row, start_column, rows_speed=-0.3, columns_speed=0
         column += columns_speed
 
 
-async def animate_spaceship(canvas, row, column, rocket_1, rocket_2):
+async def animate_spaceship(canvas, row, column, rocket_1, rocket_2, width, hight):
     while True:
-        draw_frame(canvas, row, column, rocket_2, negative=True)
-        draw_frame(canvas, row, column, rocket_1)
-        await asyncio.sleep(0)
 
-        draw_frame(canvas, row, column, rocket_1, negative=True)
-        draw_frame(canvas, row, column, rocket_2)
-        await asyncio.sleep(0)
+        curses_tools.draw_frame(canvas, row, column, rocket_2, negative=True)
+        rows_direction, columns_direction, space_pressed = curses_tools.read_controls(canvas)
+        row, column = move_rocket(row, column, canvas, rows_direction, columns_direction, rocket_1)
+        curses_tools.draw_frame(canvas, row, column, rocket_1)
+        for _ in range(2):
+            await asyncio.sleep(0)
+
+        curses_tools.draw_frame(canvas, row, column, rocket_1, negative=True)
+        rows_direction, columns_direction, space_pressed = curses_tools.read_controls(canvas)
+        row, column = move_rocket(row, column, canvas, rows_direction, columns_direction, rocket_1)
+        curses_tools.draw_frame(canvas, row, column, rocket_2)
+        for _ in range(2):
+            await asyncio.sleep(0)
 
 
 def draw(canvas):
-    canvas.border()
     curses.curs_set(False)
-    # TypeError: unbound method window.getmaxyx() needs an argument
-    # height, width = curses.window.getmaxyx()
-    height, width = 10, 79
+    canvas.nodelay(True)
+    hight, width = canvas.getmaxyx()
 
     with open("animations/rocket_frame_1.txt", "r") as f:
         rocket_1 = f.read()
     with open("animations/rocket_frame_2.txt", "r") as f:
         rocket_2 = f.read()
 
-    coroutines = [animate_spaceship(canvas, 10, 40, rocket_1, rocket_2)]
+    coroutines = [animate_spaceship(canvas, 0, 0, rocket_1, rocket_2, width, hight)]
 
-    stars_amount = 20
+    stars_amount = 50
     for _ in range(stars_amount):
-        row = random.randint(1, height)
-        column = random.randint(1, width)
+        row = random.randint(1, hight - 1)
+        column = random.randint(1, width - 1)
         symbol = random.choice(['*', '+', '.', ':'])
         coroutines.append(blink(canvas, row, column, symbol=symbol))
     while True:
@@ -97,6 +122,7 @@ def draw(canvas):
                 coroutines.remove(coroutine)
         if len(coroutines) == 0:
             break
+        canvas.border()
         canvas.refresh()
         TIC_TIMEOUT = 0.1
         time.sleep(TIC_TIMEOUT)
