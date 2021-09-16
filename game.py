@@ -2,6 +2,7 @@ import asyncio
 import curses
 import random
 import time
+from itertools import cycle
 
 import curses_tools
 
@@ -79,18 +80,13 @@ async def fire(canvas, start_row, start_column, rows_speed=-0.3, columns_speed=0
 
 
 async def animate_spaceship(canvas, row, column, rocket_1, rocket_2, width, height):
-    while True:
+    iterator = cycle([rocket_2, rocket_1, rocket_1, rocket_2])
 
-        curses_tools.draw_frame(canvas, row, column, rocket_2, negative=True)
+    for rocket in iterator:
+        curses_tools.draw_frame(canvas, row, column, rocket, negative=True)
         rows_direction, columns_direction, space_pressed = curses_tools.read_controls(canvas)
         row, column = move_rocket(row, column, canvas, rows_direction, columns_direction, rocket_1)
-        curses_tools.draw_frame(canvas, row, column, rocket_1)
-        await asyncio.sleep(0)
-
-        curses_tools.draw_frame(canvas, row, column, rocket_1, negative=True)
-        rows_direction, columns_direction, space_pressed = curses_tools.read_controls(canvas)
-        row, column = move_rocket(row, column, canvas, rows_direction, columns_direction, rocket_1)
-        curses_tools.draw_frame(canvas, row, column, rocket_2)
+        curses_tools.draw_frame(canvas, row, column, next(iterator))
         await asyncio.sleep(0)
 
 
@@ -125,7 +121,7 @@ def draw(canvas):
         canvas.refresh()
         time.sleep(TIC_TIMEOUT)
 
-  
+
 if __name__ == '__main__':
     curses.update_lines_cols()
     curses.wrapper(draw)
