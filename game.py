@@ -85,21 +85,20 @@ async def animate_spaceship(canvas, row, column, rocket_1, rocket_2, width, heig
         rows_direction, columns_direction, space_pressed = curses_tools.read_controls(canvas)
         row, column = move_rocket(row, column, canvas, rows_direction, columns_direction, rocket_1)
         curses_tools.draw_frame(canvas, row, column, rocket_1)
-        for _ in range(2):
-            await asyncio.sleep(0)
+        await asyncio.sleep(0)
 
         curses_tools.draw_frame(canvas, row, column, rocket_1, negative=True)
         rows_direction, columns_direction, space_pressed = curses_tools.read_controls(canvas)
         row, column = move_rocket(row, column, canvas, rows_direction, columns_direction, rocket_1)
         curses_tools.draw_frame(canvas, row, column, rocket_2)
-        for _ in range(2):
-            await asyncio.sleep(0)
+        await asyncio.sleep(0)
 
 
 def draw(canvas):
     curses.curs_set(False)
     canvas.nodelay(True)
     height, width = canvas.getmaxyx()
+    TIC_TIMEOUT = 0.1
 
     with open("animations/rocket_frame_1.txt", "r") as f:
         rocket_1 = f.read()
@@ -124,7 +123,6 @@ def draw(canvas):
             break
         canvas.border()
         canvas.refresh()
-        TIC_TIMEOUT = 0.1
         time.sleep(TIC_TIMEOUT)
 
   
