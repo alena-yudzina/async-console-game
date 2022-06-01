@@ -38,7 +38,6 @@ async def blink(canvas, row, column, symbol='*'):
 async def fire(
     canvas, start_row, start_column, rows_speed=-0.5, columns_speed=0
 ):
-    """Display animation of gun shot, direction and speed can be specified."""
 
     global obstacles, obstacles_in_last_collisions
 
