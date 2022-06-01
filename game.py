@@ -115,15 +115,13 @@ async def animate_spaceship(canvas, row, column, rocket_1, rocket_2):
 
         for obstacle in obstacles:
             if obstacle.has_collision(row, column):
-                obstacles.remove(obstacle)
+                obstacles_in_last_collisions.append(obstacle)
                 await explode(canvas, row, column)
                 await show_gameover(canvas)
                 return
 
 
 async def fly_garbage(canvas, column, garbage_frame, speed=0.5):
-    """Animate garbage, flying from top to bottom.
-    Сolumn position will stay same, as specified on start."""
 
     global obstacles, obstacles_in_last_collisions
 
