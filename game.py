@@ -104,6 +104,8 @@ async def animate_spaceship(canvas, row, column, rocket_1, rocket_2):
         row_speed, column_speed = update_speed(
             row_speed, column_speed, rows_direction, columns_direction
         )
+
+        frame_rows, frame_columns = curses_tools.get_frame_size(rocket)
         row = row + row_speed
         column = column + column_speed
 
@@ -114,7 +116,7 @@ async def animate_spaceship(canvas, row, column, rocket_1, rocket_2):
         await sleep(1)
 
         for obstacle in obstacles:
-            if obstacle.has_collision(row, column):
+            if obstacle.has_collision(row, column, frame_rows, frame_columns):
                 obstacles_in_last_collisions.append(obstacle)
                 await explode(canvas, row, column)
                 await show_gameover(canvas)
