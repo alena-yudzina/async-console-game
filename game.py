@@ -245,7 +245,7 @@ def draw(canvas):
         coroutines.append(blink(canvas, row, column, symbol=symbol))
 
     while True:
-        for coroutine in coroutines:
+        for coroutine in coroutines.copy():
             try:
                 coroutine.send(None)
             except StopIteration:
