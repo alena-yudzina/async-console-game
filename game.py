@@ -14,7 +14,7 @@ from physics import update_speed
 TIC_TIMEOUT = 0.1
 YEAR_START = 1957
 YEARS_COUNT_SPEED = int(2 / TIC_TIMEOUT)
-YEAR_PLASMA_GUN_INVENTED = 2022
+YEAR_PLASMA_GUN_INVENTED = 1970
 STARS_AMOUNT = 50
 
 
@@ -194,7 +194,7 @@ async def sleep(tics=1):
 async def count_years():
     global year
     year = YEAR_START
-    while year <= YEAR_PLASMA_GUN_INVENTED:
+    while True:
         await sleep(YEARS_COUNT_SPEED)
         year += 1
 
