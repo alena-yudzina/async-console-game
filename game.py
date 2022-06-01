@@ -14,7 +14,7 @@ from physics import update_speed
 TIC_TIMEOUT = 0.1
 YEAR_START = 1957
 YEARS_COUNT_SPEED = int(2 / TIC_TIMEOUT)
-YEAR_PLASMA_GUN_INVENTED = 1970
+YEAR_PLASMA_GUN_INVENTED = 2022
 STARS_AMOUNT = 50
 
 
@@ -248,10 +248,10 @@ def draw(canvas):
         for coroutine in coroutines:
             try:
                 coroutine.send(None)
-                canvas.border()
-                canvas.refresh()
             except StopIteration:
                 coroutines.remove(coroutine)
+        canvas.border()
+        canvas.refresh()
         time.sleep(TIC_TIMEOUT)
 
 
