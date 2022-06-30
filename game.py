@@ -94,6 +94,11 @@ async def animate_spaceship(canvas, row, column, rocket_1, rocket_2):
     iterator = cycle([rocket_2, rocket_1, rocket_1, rocket_2])
     row_speed = column_speed = 0
 
+    row_max, column_max = canvas.getmaxyx()
+    frame_rows,  frame_columns = curses_tools.get_frame_size(rocket_1)
+    row_limits = (0, row_max - frame_rows)
+    column_limits = (0, column_max - frame_columns)
+
     for rocket in iterator:
         curses_tools.draw_frame(canvas, row, column, rocket, negative=True)
         rows_direction, columns_direction, space_pressed = curses_tools.read_controls(canvas)
@@ -101,8 +106,12 @@ async def animate_spaceship(canvas, row, column, rocket_1, rocket_2):
             row_speed, column_speed, rows_direction, columns_direction
         )
 
-        frame_rows, frame_columns = curses_tools.get_frame_size(rocket)
+        if row >= max(row_limits) and row_speed >= 0 or row <= min(row_limits) and row_speed <= 0:
+            row_speed = 0
         row = row + row_speed
+    
+        if column >= max(column_limits) and column_speed >= 0 or column <= min(column_limits) and column_speed <= 0:
+            column_speed = 0
         column = column + column_speed
 
         if space_pressed and year > YEAR_PLASMA_GUN_INVENTED:
