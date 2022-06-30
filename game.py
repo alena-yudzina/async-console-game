@@ -39,8 +39,6 @@ async def fire(
     canvas, start_row, start_column, rows_speed=-0.5, columns_speed=0
 ):
 
-    global obstacles, obstacles_in_last_collisions
-
     row, column = start_row, start_column
 
     canvas.addstr(round(row), round(column), '*')
@@ -93,8 +91,6 @@ async def show_gameover(canvas):
 
 async def animate_spaceship(canvas, row, column, rocket_1, rocket_2):
 
-    global coroutines, year
-
     iterator = cycle([rocket_2, rocket_1, rocket_1, rocket_2])
     row_speed = column_speed = 0
 
@@ -124,8 +120,6 @@ async def animate_spaceship(canvas, row, column, rocket_1, rocket_2):
 
 
 async def fly_garbage(canvas, column, garbage_frame, speed=0.5):
-
-    global obstacles, obstacles_in_last_collisions
 
     rows_number, columns_number = canvas.getmaxyx()
 
@@ -175,8 +169,6 @@ async def fly_garbage(canvas, column, garbage_frame, speed=0.5):
 
 async def fill_orbit_with_garbage(canvas, garbage_frame):
 
-    global coroutines, year
-
     while True:
         if get_garbage_delay_tics(year) is not None:
             _, columns_number = canvas.getmaxyx()
@@ -203,8 +195,6 @@ async def count_years():
 
 async def show_win_info(canvas, info_frame):
 
-    global year
-
     while True:
         if year in PHRASES:
             phrase = PHRASES[year]
@@ -220,7 +210,7 @@ def draw(canvas):
     canvas.nodelay(True)
     height, width = canvas.getmaxyx()
 
-    global coroutines, obstacles, obstacles_in_last_collisions, year
+    global coroutines, obstacles, obstacles_in_last_collisions
 
     with open("animations/rocket_frame_1.txt", "r") as f:
         rocket_1 = f.read()
