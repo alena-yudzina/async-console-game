@@ -117,12 +117,14 @@ async def animate_spaceship(canvas, row, column, rocket_1, rocket_2):
         if space_pressed and year > YEAR_PLASMA_GUN_INVENTED:
             coroutines.append(fire(canvas, row, column + 2))
 
-        curses_tools.draw_frame(canvas, row, column, next(iterator))
+        current_rocket = next(iterator)
+        curses_tools.draw_frame(canvas, row, column, current_rocket)
         await sleep(1)
 
         for obstacle in obstacles:
             if obstacle.has_collision(row, column, frame_rows, frame_columns):
                 obstacles_in_last_collisions.append(obstacle)
+                curses_tools.draw_frame(canvas, row, column, current_rocket, negative=True)
                 await explode(canvas, row, column)
                 await show_gameover(canvas)
                 return
