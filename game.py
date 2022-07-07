@@ -72,9 +72,6 @@ async def fire(
 
 async def show_gameover(canvas):
 
-    with open("animations/game_over.txt", "r") as f:
-        game_over_farme = f.read()
-
     rows_number, columns_number = canvas.getmaxyx()
     height_gameover, width_gameover = curses_tools.get_frame_size(
         game_over_farme
@@ -259,5 +256,10 @@ def draw(canvas):
 
 
 if __name__ == '__main__':
+
+    with open("animations/game_over.txt", "r") as f:
+        game_over_farme = f.read()
+
     curses.update_lines_cols()
     curses.wrapper(draw)
+    
