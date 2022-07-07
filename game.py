@@ -96,8 +96,8 @@ async def animate_spaceship(canvas, row, column, rocket_1, rocket_2):
 
     row_max, column_max = canvas.getmaxyx()
     frame_rows,  frame_columns = curses_tools.get_frame_size(rocket_1)
-    row_limits = (0, row_max - frame_rows)
-    column_limits = (0, column_max - frame_columns)
+    row_limits = (1, row_max - frame_rows - 1)
+    column_limits = (1, column_max - frame_columns - 1)
 
     for rocket in iterator:
         curses_tools.draw_frame(canvas, row, column, rocket, negative=True)
@@ -106,11 +106,11 @@ async def animate_spaceship(canvas, row, column, rocket_1, rocket_2):
             row_speed, column_speed, rows_direction, columns_direction
         )
 
-        if row < max(row_limits) and row_speed >= 0 or row > min(row_limits) and row_speed <= 0:
+        if row >= max(row_limits) and row_speed >= 0 or row <= min(row_limits) and row_speed <= 0:
             row_speed = 0
         row = row + row_speed
     
-        if column < max(column_limits) and column_speed >= 0 or column > min(column_limits) and column_speed <= 0:
+        if column >= max(column_limits) and column_speed >= 0 or column <= min(column_limits) and column_speed <= 0:
             column_speed = 0
         column = column + column_speed
 
