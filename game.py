@@ -181,7 +181,7 @@ async def fly_garbage(canvas, column, garbage_frame, speed=0.5):
 async def fill_orbit_with_garbage(canvas, garbage_frame):
 
     while True:
-        if get_garbage_delay_tics(year) is not None:
+        if get_garbage_delay_tics(year):
             _, columns_number = canvas.getmaxyx()
             column = random.randint(1, columns_number)
             coroutines.append(
