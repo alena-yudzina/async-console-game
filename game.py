@@ -220,10 +220,12 @@ def draw(canvas):
 
     global coroutines, obstacles, obstacles_in_last_collisions
 
-    with open("animations/rocket_frame_1.txt", "r") as f:
-        rocket_1 = f.read()
-    with open("animations/rocket_frame_2.txt", "r") as f:
-        rocket_2 = f.read()
+    rocket_imgs = []
+    for num in range(1, 3):
+        with open(f"animations/rocket_frame_{num}.txt", "r") as f:
+            rocket_imgs.append(f.read())
+    rocket_1, rocket_2 = rocket_imgs
+
     with open("animations/trash_xl.txt", "r") as garbage_file:
         garbage = garbage_file.read()
     with open("animations/game_over.txt", "r") as f:
