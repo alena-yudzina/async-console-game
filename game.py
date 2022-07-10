@@ -70,7 +70,7 @@ async def fire(
                 return
 
 
-async def show_gameover(canvas):
+async def show_gameover(canvas, game_over_farme):
 
     rows_number, columns_number = canvas.getmaxyx()
     height_gameover, width_gameover = curses_tools.get_frame_size(
@@ -86,7 +86,7 @@ async def show_gameover(canvas):
         await asyncio.sleep(0)
 
 
-async def animate_spaceship(canvas, row, column, rocket_1, rocket_2):
+async def animate_spaceship(canvas, row, column, rocket_1, rocket_2, game_over_farme):
 
     iterator = cycle([rocket_2, rocket_1, rocket_1, rocket_2])
     row_speed = column_speed = 0
@@ -123,7 +123,7 @@ async def animate_spaceship(canvas, row, column, rocket_1, rocket_2):
                 obstacles_in_last_collisions.append(obstacle)
                 curses_tools.draw_frame(canvas, row, column, current_rocket, negative=True)
                 await explode(canvas, row, column)
-                await show_gameover(canvas)
+                await show_gameover(canvas, game_over_farme)
                 return
 
 
@@ -226,10 +226,12 @@ def draw(canvas):
         rocket_2 = f.read()
     with open("animations/trash_xl.txt", "r") as garbage_file:
         garbage = garbage_file.read()
+    with open("animations/game_over.txt", "r") as f:
+        game_over_farme = f.read()
 
     info_frame = canvas.derwin(2, height-1, 1, 1)
     coroutines = [
-        animate_spaceship(canvas, 0, 0, rocket_1, rocket_2),
+        animate_spaceship(canvas, 0, 0, rocket_1, rocket_2, game_over_farme),
         count_years(),
         show_win_info(canvas, info_frame),
         fill_orbit_with_garbage(canvas, garbage),
@@ -256,9 +258,6 @@ def draw(canvas):
 
 
 if __name__ == '__main__':
-
-    with open("animations/game_over.txt", "r") as f:
-        game_over_farme = f.read()
 
     curses.update_lines_cols()
     curses.wrapper(draw)
